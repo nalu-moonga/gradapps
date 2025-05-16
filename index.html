@@ -348,6 +348,7 @@
             color: var(--mit-dark-gray);
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -365,12 +366,12 @@
                 <span>Application Pending</span>
             </div>
             <div class="legend-item">
-                <span class="school-status accepted"></span>
-                <span>Accepted</span>
-            </div>
-            <div class="legend-item">
                 <span class="school-status rejected"></span>
                 <span>Rejected</span>
+            </div>
+            <div class="legend-item">
+                <span class="school-status accepted"></span>
+                <span>Accepted</span>
             </div>
         </div>
         
@@ -849,7 +850,7 @@
             }
         }
         
-        function toggleSchoolStatus(schoolId) {
+       function toggleSchoolStatus(schoolId) {
             const school = appData.schools[schoolId];
             
             // Cycle through statuses
@@ -858,16 +859,31 @@
                     school.status = 'pending';
                     break;
                 case 'pending':
-                    school.status = 'accepted';
-                    break;
-                case 'accepted':
                     school.status = 'rejected';
                     break;
                 case 'rejected':
+                    school.status = 'accepted';
+                    break;
+                case 'accepted':
                     school.status = 'not-applied';
                     break;
                 default:
                     school.status = 'not-applied';
+            }
+        
+            // 🎉 fire confetti when they hit "accepted"
+            if (school.status === 'accepted') {
+              // a little burst from center-top
+              confetti({
+                particleCount: 3000,
+                spread: 500,
+                origin: { x: 1, y: 0.2 }
+              });
+              confetti({
+                particleCount: 3000,
+                spread: 500,
+                origin: { x: 0, y: 0.2 }
+              });
             }
             
             saveData();
