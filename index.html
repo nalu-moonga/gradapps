@@ -549,44 +549,40 @@
 
         // DOM elements
         const facultyCards = document.getElementById('faculty-cards');
-        const schoolTabs = document.querySelectorAll('.school-tab');
         const currentSchoolTitle = document.querySelector('.current-school');
-        const addSchoolTab = document.querySelector('.school-tab[data-school="add-school"]');
 
-        // Add event listeners
-        const facultyForm = document.getElementById('faculty-form');
-        facultyForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get the button to check if we're adding or updating
-            const submitButton = document.getElementById('add-faculty');
-            
-            if (submitButton.textContent === 'Update Faculty') {
-                const index = parseInt(submitButton.dataset.editIndex);
-                updateFaculty(index);
-            } else {
-                addFaculty();
-            }
-        });
-        
-        // Add event listener for add school button
-        document.querySelector('.school-tab[data-school="add-school"]').addEventListener('click', function() {
-            showAddSchoolPrompt();
-        });
-        
-        // Update school tab event binding function
-        function bindSchoolTabEvents() {
-            document.querySelectorAll('.school-tab').forEach(tab => {
-                if (tab.dataset.school !== 'add-school') {
-                    tab.addEventListener('click', () => {
-                        changeSchool(tab.dataset.school);
-                    });
+        // Set up event listeners after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener for faculty form
+            const facultyForm = document.getElementById('faculty-form');
+            facultyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get the button to check if we're adding or updating
+                const submitButton = document.getElementById('add-faculty');
+                
+                if (submitButton.textContent === 'Update Faculty') {
+                    const index = parseInt(submitButton.dataset.editIndex);
+                    updateFaculty(index);
+                } else {
+                    addFaculty();
                 }
             });
-        }
-        
-        // Initial binding
-        bindSchoolTabEvents();
+            
+            // Add event listener for add school button
+            const addSchoolButton = document.querySelector('.school-tab[data-school="add-school"]');
+            addSchoolButton.addEventListener('click', function() {
+                console.log('Add school button clicked');
+                showAddSchoolPrompt();
+            });
+            
+            // Call this function when the page loads
+            updateSchoolTabs();
+            updateAddFormVisibility();
+            
+            // Initial render
+            renderFacultyCards();
+        });
 
         // Functions
         function renderFacultyCards() {
