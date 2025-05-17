@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grad School Application Tracker</title>
-            <style>
+    <style>
         :root {
             --mit-red: #a31f34;
             --mit-light-gray: #f2f2f2;
@@ -17,41 +17,46 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
         }
         
         body {
             background-color: var(--mit-light-gray);
-            padding: 20px;
+            padding: 12px;
+            font-size: 16px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
+            overflow-x: hidden;
         }
         
         .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            flex-direction: column;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid var(--mit-red);
         }
         
         .header h1 {
             color: var(--mit-red);
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
         }
         
-       .status-legend {
+        .status-legend {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
-            /* Changed from margin-bottom: 20px to 5px */
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
             margin-bottom: 5px;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--mit-dark-gray);
         }
         
@@ -63,18 +68,17 @@
         
         .schools-tabs {
             display: flex;
-            margin-bottom: 20px;
-            gap: 10px;
+            margin-bottom: 15px;
+            gap: 8px;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 12px 10px 10px 10px; /* Add padding at top and sides to ensure delete button visibility */
+            padding: 12px 10px 10px 10px;
             scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
         }
         
-        /* Customize scrollbar appearance for WebKit browsers (Chrome, Safari, etc.) */
         .schools-tabs::-webkit-scrollbar {
-            height: 6px;
+            height: 4px;
         }
         
         .schools-tabs::-webkit-scrollbar-track {
@@ -87,12 +91,8 @@
             border-radius: 10px;
         }
         
-        .schools-tabs::-webkit-scrollbar-thumb:hover {
-            background: var(--mit-red);
-        }
-        
         .school-tab {
-            padding: 10px 20px;
+            padding: 12px 18px;
             background-color: white;
             border: 2px solid var(--mit-dark-gray);
             border-radius: var(--radius);
@@ -104,7 +104,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-shrink: 0; /* Prevent tabs from shrinking */
+            flex-shrink: 0;
+            font-size: 14px;
+            min-height: 48px; /* Minimum touch target size */
         }
         
         .school-tab.active {
@@ -119,13 +121,14 @@
         }
         
         .school-status {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: inline-block;
             margin-left: 5px;
             border: 1px solid #ccc;
             cursor: pointer;
+            min-width: 16px; /* Ensure minimum size */
         }
         
         .school-status.accepted {
@@ -150,15 +153,14 @@
         
         .delete-school {
             position: absolute;
-            top: -10px;
+            top: -8px;
             right: -8px;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background-color: var(--mit-red);
             color: white;
-            font-size: 12px;
-            /* Improved flexbox alignment with these properties */
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -167,7 +169,6 @@
             opacity: 0;
             transition: opacity 0.2s, visibility 0.2s;
             z-index: 10;
-            /* Added these properties for better centering */
             line-height: 1;
             padding: 0;
         }
@@ -177,20 +178,34 @@
             opacity: 1;
         }
         
-        /* Remove the old hover style since we're handling it differently now */
+        /* Make delete button always visible on touch devices */
+        @media (max-width: 768px) {
+            .delete-school {
+                visibility: visible;
+                opacity: 0.8;
+            }
+        }
         
         .add-panel {
             background-color: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: var(--radius);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             box-shadow: var(--shadow);
         }
         
         .form-row {
             display: flex;
+            flex-direction: column;
             gap: 15px;
             margin-bottom: 15px;
+        }
+        
+        /* Stack form in single column on mobile */
+        @media (min-width: 768px) {
+            .form-row {
+                flex-direction: row;
+            }
         }
         
         .form-group {
@@ -202,6 +217,7 @@
             margin-bottom: 5px;
             font-weight: 500;
             color: #444;
+            font-size: 14px;
         }
         
         .form-control {
@@ -211,6 +227,7 @@
             border-radius: var(--radius);
             font-size: 16px;
             transition: border 0.2s;
+            -webkit-appearance: none; /* Removes default styling on iOS */
         }
         
         .form-control:focus {
@@ -218,8 +235,20 @@
             border-color: var(--mit-red);
         }
         
+        /* Increase form element size on mobile for better touch targets */
+        @media (max-width: 768px) {
+            .form-control {
+                padding: 14px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            select.form-control {
+                height: 48px; /* Larger touch target */
+            }
+        }
+        
         .btn {
-            padding: 12px 24px;
+            padding: 14px 24px;
             border: none;
             border-radius: var(--radius);
             font-size: 16px;
@@ -227,6 +256,14 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: var(--shadow);
+            min-height: 48px; /* Minimum touch target size */
+            width: 100%; /* Full width on mobile */
+        }
+        
+        @media (min-width: 768px) {
+            .btn {
+                width: auto; /* Auto width on larger screens */
+            }
         }
         
         .btn-primary {
@@ -238,44 +275,75 @@
             background-color: #8a1a2a;
         }
         
+        .current-school {
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        /* Card-based layout for faculty items instead of table */
         .faculty-list {
+            background-color: transparent;
+            border-radius: var(--radius);
+        }
+        
+        .faculty-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .faculty-card {
             background-color: white;
             border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-        
-        .faculty-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .faculty-table th, .faculty-table td {
             padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
-        .faculty-table th {
-            background-color: var(--mit-red);
-            color: white;
+        .faculty-name {
+            font-size: 18px;
             font-weight: 600;
+            color: var(--mit-red);
         }
         
-        .faculty-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .faculty-email {
+            color: #444;
+            word-break: break-all;
         }
         
-        .faculty-table tr:hover {
-            background-color: #f0f0f0;
+        .faculty-lab {
+            font-weight: 500;
+        }
+        
+        .faculty-website a {
+            color: #0066cc;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .faculty-status {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
         }
         
         .badge {
             display: inline-block;
-            padding: 5px 10px;
+            padding: 8px 12px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
+            text-align: center;
+            min-height: 36px; /* Better touch target */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .badge-success {
@@ -298,14 +366,16 @@
             color: white;
         }
         
-        .action-cell {
+        .faculty-actions {
             display: flex;
             gap: 10px;
+            margin-top: 10px;
+            justify-content: space-between;
         }
         
         .btn-icon {
-            width: 36px;
-            height: 36px;
+            width: 48px; /* Larger touch target */
+            height: 48px; /* Larger touch target */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -313,6 +383,7 @@
             border: none;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 20px;
         }
         
         .btn-edit {
@@ -332,20 +403,33 @@
         
         .btn-icon:hover {
             filter: brightness(1.1);
-            transform: translateY(-2px);
-        }
-        
-        .current-school {
-            font-size: 18px;
-            font-weight: 600;
-            color: #444;
-            margin-bottom: 10px;
         }
         
         .empty-state {
-            padding: 40px;
+            padding: 30px 20px;
             text-align: center;
             color: var(--mit-dark-gray);
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        /* Improved focus states for accessibility */
+        button:focus, a:focus, input:focus, select:focus {
+            outline: 3px solid rgba(163, 31, 52, 0.5);
+        }
+        
+        /* Hide table headers on mobile */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -353,25 +437,25 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Graduate School Application Tracker</h1>
-        </div>
-        
-        <div class="status-legend">
-            <div class="legend-item">
-                <span class="school-status not-applied"></span>
-                <span>Not Applied</span>
-            </div>
-            <div class="legend-item">
-                <span class="school-status pending"></span>
-                <span>Application Pending</span>
-            </div>
-            <div class="legend-item">
-                <span class="school-status rejected"></span>
-                <span>Rejected</span>
-            </div>
-            <div class="legend-item">
-                <span class="school-status accepted"></span>
-                <span>Accepted</span>
+            <h1>Grad School Application Tracker</h1>
+            
+            <div class="status-legend">
+                <div class="legend-item">
+                    <span class="school-status not-applied"></span>
+                    <span>Not Applied</span>
+                </div>
+                <div class="legend-item">
+                    <span class="school-status pending"></span>
+                    <span>Pending</span>
+                </div>
+                <div class="legend-item">
+                    <span class="school-status rejected"></span>
+                    <span>Rejected</span>
+                </div>
+                <div class="legend-item">
+                    <span class="school-status accepted"></span>
+                    <span>Accepted</span>
+                </div>
             </div>
         </div>
         
@@ -426,20 +510,8 @@
         <div class="current-school">Add a school to get started</div>
         
         <div class="faculty-list">
-            <table class="faculty-table">
-                <thead>
-                    <tr>
-                        <th>Faculty Name</th>
-                        <th>Lab</th>
-                        <th>Accepting</th>
-                        <th>Emailed</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="faculty-table-body">
-                    <!-- Table content will be generated dynamically -->
-                </tbody>
-            </table>
+            <!-- Card-based layout will be generated here -->
+            <div id="faculty-cards" class="faculty-cards"></div>
         </div>
     </div>
 
@@ -449,9 +521,7 @@
             localStorage.clear(); // Clear any old data
             localStorage.setItem('appInitialized', 'true');
         }
-        // Initial data with empty lists
-        const initialData = {};
-
+        
         // Store data
         let appData = {
             currentSchool: '',
@@ -478,41 +548,45 @@
         }
 
         // DOM elements
-        const facultyTableBody = document.getElementById('faculty-table-body');
-        const schoolTabs = document.querySelectorAll('.school-tab');
+        const facultyCards = document.getElementById('faculty-cards');
         const currentSchoolTitle = document.querySelector('.current-school');
-        const addSchoolTab = document.querySelector('.school-tab[data-school="add-school"]');
 
-        // Add event listeners
-        const facultyForm = document.getElementById('faculty-form');
-        facultyForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get the button to check if we're adding or updating
-            const submitButton = document.getElementById('add-faculty');
-            
-            if (submitButton.textContent === 'Update Faculty') {
-                const index = parseInt(submitButton.dataset.editIndex);
-                updateFaculty(index);
-            } else {
-                addFaculty();
-            }
-        });
-        
-        schoolTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const school = tab.dataset.school;
-                if (school === 'add-school') {
-                    showAddSchoolPrompt();
+        // Set up event listeners after the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener for faculty form
+            const facultyForm = document.getElementById('faculty-form');
+            facultyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get the button to check if we're adding or updating
+                const submitButton = document.getElementById('add-faculty');
+                
+                if (submitButton.textContent === 'Update Faculty') {
+                    const index = parseInt(submitButton.dataset.editIndex);
+                    updateFaculty(index);
                 } else {
-                    changeSchool(school);
+                    addFaculty();
                 }
             });
+            
+            // Add event listener for add school button
+            const addSchoolButton = document.querySelector('.school-tab[data-school="add-school"]');
+            addSchoolButton.addEventListener('click', function() {
+                console.log('Add school button clicked');
+                showAddSchoolPrompt();
+            });
+            
+            // Call this function when the page loads
+            updateSchoolTabs();
+            updateAddFormVisibility();
+            
+            // Initial render
+            renderFacultyCards();
         });
 
         // Functions
-        function renderFacultyTable() {
-            facultyTableBody.innerHTML = '';
+        function renderFacultyCards() {
+            facultyCards.innerHTML = '';
             
             // If no current school is selected, don't try to render anything
             if (!appData.currentSchool || !appData.schools[appData.currentSchool]) {
@@ -522,42 +596,55 @@
             const currentSchoolData = appData.schools[appData.currentSchool];
             
             if (!currentSchoolData.faculty.length) {
-                facultyTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <p>No faculty added yet for ${currentSchoolData.name}.</p>
-                            </div>
-                        </td>
-                    </tr>
+                facultyCards.innerHTML = `
+                    <div class="empty-state">
+                        <p>No faculty added yet for ${currentSchoolData.name}.</p>
+                    </div>
                 `;
                 return;
             }
             
             currentSchoolData.faculty.forEach((faculty, index) => {
-                const tr = document.createElement('tr');
+                const card = document.createElement('div');
+                card.className = 'faculty-card';
                 
-                // Create email link for faculty name
-                const emailLink = faculty.email ? 
-                    `<a href="mailto:${faculty.email}" title="Send email">${faculty.name}</a>` : 
-                    faculty.name;
+                // Create elements for card content
+                const nameElem = document.createElement('div');
+                nameElem.className = 'faculty-name';
                 
-                // Create lab link
-                const labLink = faculty.website ? 
-                    `<a href="${faculty.website}" target="_blank" title="Visit lab website">${faculty.lab}</a>` : 
-                    faculty.lab;
-                
-                // Accepting status badge
-                let acceptingBadge = '';
-                if (faculty.accepting === 'accepting') {
-                    acceptingBadge = 'Accepting';
-                } else if (faculty.accepting === 'not-accepting') {
-                    acceptingBadge = 'Not Accepting';
+                if (faculty.email) {
+                    const emailLink = document.createElement('a');
+                    emailLink.href = `mailto:${faculty.email}`;
+                    emailLink.textContent = faculty.name;
+                    nameElem.appendChild(emailLink);
                 } else {
-                    acceptingBadge = 'Unknown';
+                    nameElem.textContent = faculty.name;
                 }
                 
-                // Emailed status badge
+                const labElem = document.createElement('div');
+                labElem.className = 'faculty-lab';
+                labElem.textContent = faculty.lab || 'No lab specified';
+                
+                // Create website link
+                let websiteElem = '';
+                if (faculty.website) {
+                    websiteElem = `
+                        <div class="faculty-website">
+                            <a href="${faculty.website}" target="_blank" rel="noopener">Lab Website</a>
+                        </div>
+                    `;
+                }
+                
+                // Create status badges
+                let acceptingBadge = '';
+                if (faculty.accepting === 'accepting') {
+                    acceptingBadge = '<span class="badge badge-success" onclick="toggleAccepting(' + index + ')">Accepting</span>';
+                } else if (faculty.accepting === 'not-accepting') {
+                    acceptingBadge = '<span class="badge badge-danger" onclick="toggleAccepting(' + index + ')">Not Accepting</span>';
+                } else {
+                    acceptingBadge = '<span class="badge badge-warning" onclick="toggleAccepting(' + index + ')">Unknown</span>';
+                }
+                
                 let emailedBadge = '';
                 if (faculty.emailed === 'replied') {
                     emailedBadge = '<span class="badge badge-success">Replied</span>';
@@ -567,21 +654,42 @@
                     emailedBadge = '<span class="badge badge-secondary">Not Emailed</span>';
                 }
                 
-                tr.innerHTML = `
-                    <td>${emailLink}</td>
-                    <td>${labLink}</td>
-                    <td><span class="badge badge-${faculty.accepting === 'accepting' ? 'success' : faculty.accepting === 'not-accepting' ? 'danger' : 'warning'}" 
-                        style="cursor: pointer;" 
-                        onclick="toggleAccepting(${index})">${acceptingBadge}</span></td>
-                    <td>${emailedBadge}</td>
-                    <td class="action-cell">
+                // Action buttons
+                const actionsHtml = `
+                    <div class="faculty-actions">
                         <button class="btn-icon btn-edit" title="Edit" onclick="editFaculty(${index})">✏️</button>
                         <button class="btn-icon btn-emailed" title="Mark as Emailed" onclick="toggleEmailed(${index})">📧</button>
                         <button class="btn-icon btn-delete" title="Delete" onclick="deleteFaculty(${index})">🗑️</button>
-                    </td>
+                    </div>
                 `;
                 
-                facultyTableBody.appendChild(tr);
+                // Add elements to card
+                card.appendChild(nameElem);
+                
+                if (faculty.email) {
+                    const emailElem = document.createElement('div');
+                    emailElem.className = 'faculty-email';
+                    emailElem.textContent = faculty.email;
+                    card.appendChild(emailElem);
+                }
+                
+                card.appendChild(labElem);
+                
+                if (faculty.website) {
+                    card.innerHTML += websiteElem;
+                }
+                
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'faculty-status';
+                statusDiv.innerHTML = `
+                    <div>${acceptingBadge}</div>
+                    <div>${emailedBadge}</div>
+                `;
+                card.appendChild(statusDiv);
+                
+                card.innerHTML += actionsHtml;
+                
+                facultyCards.appendChild(card);
             });
         }
 
@@ -593,8 +701,6 @@
             const accepting = document.getElementById('accepting-status').value;
             const emailed = document.getElementById('emailed-status').value;
             
-            // Form validation now handled by HTML5 'required' attribute
-            
             appData.schools[appData.currentSchool].faculty.push({
                 name,
                 email,
@@ -605,7 +711,7 @@
             });
             
             saveData();
-            renderFacultyTable();
+            renderFacultyCards();
             clearForm();
         }
 
@@ -623,6 +729,9 @@
             const addButton = document.getElementById('add-faculty');
             addButton.dataset.editIndex = index;
             addButton.textContent = 'Update Faculty';
+            
+            // Scroll to form
+            document.querySelector('.add-panel').scrollIntoView({ behavior: 'smooth' });
         }
 
         function updateFaculty(index) {
@@ -632,8 +741,6 @@
             const website = document.getElementById('lab-website').value.trim();
             const accepting = document.getElementById('accepting-status').value;
             const emailed = document.getElementById('emailed-status').value;
-            
-            // Form validation now handled by HTML5 'required' attribute
             
             // Make sure index is valid
             if (index >= 0 && index < appData.schools[appData.currentSchool].faculty.length) {
@@ -647,7 +754,7 @@
                 };
                 
                 saveData();
-                renderFacultyTable();
+                renderFacultyCards();
                 clearForm();
             } else {
                 console.error('Invalid index for faculty update:', index);
@@ -658,7 +765,7 @@
             if (confirm('Are you sure you want to delete this faculty?')) {
                 appData.schools[appData.currentSchool].faculty.splice(index, 1);
                 saveData();
-                renderFacultyTable();
+                renderFacultyCards();
             }
         }
 
@@ -675,7 +782,7 @@
             }
             
             saveData();
-            renderFacultyTable();
+            renderFacultyCards();
         }
 
         function toggleEmailed(index) {
@@ -691,7 +798,7 @@
             }
             
             saveData();
-            renderFacultyTable();
+            renderFacultyCards();
         }
 
         function clearForm() {
@@ -726,7 +833,7 @@
                 currentSchoolTitle.textContent = 'Add a school to get started';
             }
             
-            renderFacultyTable();
+            renderFacultyCards();
             updateAddFormVisibility();
         }
         
@@ -835,102 +942,3 @@
                 
                 // Insert before "Add School" tab
                 tabsContainer.insertBefore(newTab, addSchoolTab);
-            });
-            
-            // Update the current school display
-            updateAddFormVisibility();
-        }
-        
-        function getStatusTitle(status) {
-            switch(status) {
-                case 'accepted': return 'Accepted';
-                case 'rejected': return 'Rejected';
-                case 'pending': return 'Application Pending';
-                default: return 'Not Applied';
-            }
-        }
-        
-       function toggleSchoolStatus(schoolId) {
-            const school = appData.schools[schoolId];
-            
-            // Cycle through statuses
-            switch(school.status) {
-                case 'not-applied':
-                    school.status = 'pending';
-                    break;
-                case 'pending':
-                    school.status = 'rejected';
-                    break;
-                case 'rejected':
-                    school.status = 'accepted';
-                    break;
-                case 'accepted':
-                    school.status = 'not-applied';
-                    break;
-                default:
-                    school.status = 'not-applied';
-            }
-        
-            // 🎉 fire confetti when they hit "accepted"
-            if (school.status === 'accepted') {
-              // a little burst from center-top
-              confetti({
-                particleCount: 3000,
-                spread: 500,
-                origin: { x: 1, y: 0.2 }
-              });
-              confetti({
-                particleCount: 3000,
-                spread: 500,
-                origin: { x: 0, y: 0.2 }
-              });
-            }
-            
-            saveData();
-            updateSchoolTabs();
-        }
-        
-        function deleteSchool(schoolId) {
-            if (Object.keys(appData.schools).length <= 1) {
-                alert("Cannot delete the last school. At least one school is required.");
-                return;
-            }
-            
-            if (confirm(`Are you sure you want to delete the school "${appData.schools[schoolId].name}" and all its faculty data?`)) {
-                // If we're deleting the current school, switch to another school first
-                if (appData.currentSchool === schoolId) {
-                    // Find the first school that's not the one we're deleting
-                    const nextSchool = Object.keys(appData.schools).find(id => id !== schoolId);
-                    if (nextSchool) {
-                        appData.currentSchool = nextSchool;
-                    }
-                }
-                
-                // Delete the school
-                delete appData.schools[schoolId];
-                
-                // Update UI and save data
-                updateSchoolTabs();
-                currentSchoolTitle.textContent = `${appData.schools[appData.currentSchool].name} Faculty List`;
-                renderFacultyTable();
-                saveData();
-            }
-        }
-        
-        // Call this function when the page loads
-        updateSchoolTabs();
-        updateAddFormVisibility();
-        
-        // Initial render
-        renderFacultyTable();
-
-        // Make functions available globally for onclick handlers
-        window.editFaculty = editFaculty;
-        window.deleteFaculty = deleteFaculty;
-        window.toggleEmailed = toggleEmailed;
-        window.toggleAccepting = toggleAccepting;
-        window.deleteSchool = deleteSchool;
-        window.toggleSchoolStatus = toggleSchoolStatus;
-    </script>
-</body>
-</html>
