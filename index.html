@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grad School Application Tracker</title>
     <style>
         :root {
@@ -17,25 +17,23 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
             background-color: var(--mit-light-gray);
-            padding: 12px;
-            font-size: 16px;
+            padding: 15px;
         }
         
         .container {
-            max-width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
-            overflow-x: hidden;
         }
         
         .header {
             display: flex;
             flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--mit-red);
@@ -43,20 +41,19 @@
         
         .header h1 {
             color: var(--mit-red);
-            font-size: 24px;
+            font-size: 24px; /* Smaller for mobile */
             font-weight: 600;
-            margin-bottom: 10px;
             text-align: center;
         }
         
         .status-legend {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
             justify-content: center;
             gap: 10px;
-            margin-top: 8px;
+            margin-top: 10px;
             margin-bottom: 5px;
-            font-size: 12px;
+            font-size: 13px; /* Smaller for mobile */
             color: var(--mit-dark-gray);
         }
         
@@ -68,17 +65,17 @@
         
         .schools-tabs {
             display: flex;
-            margin-bottom: 15px;
-            gap: 8px;
-            overflow-x: auto;
+            margin-bottom: 20px;
+            gap: 10px;
+            overflow-x: auto; /* Enable horizontal scrolling */
             white-space: nowrap;
             padding: 12px 10px 10px 10px;
             scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
         
         .schools-tabs::-webkit-scrollbar {
-            height: 4px;
+            height: 5px;
         }
         
         .schools-tabs::-webkit-scrollbar-track {
@@ -92,7 +89,7 @@
         }
         
         .school-tab {
-            padding: 12px 18px;
+            padding: 12px 20px; /* Larger touch target */
             background-color: white;
             border: 2px solid var(--mit-dark-gray);
             border-radius: var(--radius);
@@ -105,8 +102,7 @@
             align-items: center;
             gap: 10px;
             flex-shrink: 0;
-            font-size: 14px;
-            min-height: 48px; /* Minimum touch target size */
+            min-height: 44px; /* Minimum touch target size */
         }
         
         .school-tab.active {
@@ -121,14 +117,13 @@
         }
         
         .school-status {
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             display: inline-block;
             margin-left: 5px;
             border: 1px solid #ccc;
             cursor: pointer;
-            min-width: 16px; /* Ensure minimum size */
         }
         
         .school-status.accepted {
@@ -153,55 +148,52 @@
         
         .delete-school {
             position: absolute;
-            top: -8px;
+            top: -10px;
             right: -8px;
-            width: 24px;
-            height: 24px;
+            width: 24px; /* Larger touch target */
+            height: 24px; /* Larger touch target */
             border-radius: 50%;
             background-color: var(--mit-red);
             color: white;
-            font-size: 16px;
+            font-size: 16px; /* Larger for better visibility */
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            visibility: hidden;
             opacity: 0;
-            transition: opacity 0.2s, visibility 0.2s;
+            transition: opacity 0.2s;
             z-index: 10;
             line-height: 1;
             padding: 0;
         }
         
         .school-tab:hover .delete-school {
-            visibility: visible;
             opacity: 1;
         }
         
-        /* Make delete button always visible on touch devices */
+        /* Always show delete button on touch devices */
         @media (max-width: 768px) {
             .delete-school {
-                visibility: visible;
-                opacity: 0.8;
+                opacity: 0.7;
             }
         }
         
         .add-panel {
             background-color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: var(--radius);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             box-shadow: var(--shadow);
         }
         
         .form-row {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Stack on mobile */
             gap: 15px;
             margin-bottom: 15px;
         }
         
-        /* Stack form in single column on mobile */
+        /* Return to horizontal on larger screens */
         @media (min-width: 768px) {
             .form-row {
                 flex-direction: row;
@@ -217,17 +209,15 @@
             margin-bottom: 5px;
             font-weight: 500;
             color: #444;
-            font-size: 14px;
         }
         
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 12px; /* Larger touch target */
             border: 1px solid var(--mit-dark-gray);
             border-radius: var(--radius);
-            font-size: 16px;
+            font-size: 16px; /* Prevent auto-zoom on iOS */
             transition: border 0.2s;
-            -webkit-appearance: none; /* Removes default styling on iOS */
         }
         
         .form-control:focus {
@@ -235,20 +225,8 @@
             border-color: var(--mit-red);
         }
         
-        /* Increase form element size on mobile for better touch targets */
-        @media (max-width: 768px) {
-            .form-control {
-                padding: 14px;
-                font-size: 16px; /* Prevent zoom on iOS */
-            }
-            
-            select.form-control {
-                height: 48px; /* Larger touch target */
-            }
-        }
-        
         .btn {
-            padding: 14px 24px;
+            padding: 12px 24px;
             border: none;
             border-radius: var(--radius);
             font-size: 16px;
@@ -256,8 +234,8 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: var(--shadow);
-            min-height: 48px; /* Minimum touch target size */
             width: 100%; /* Full width on mobile */
+            min-height: 44px; /* Minimum touch target size */
         }
         
         @media (min-width: 768px) {
@@ -283,67 +261,47 @@
             text-align: center;
         }
         
-        /* Card-based layout for faculty items instead of table */
         .faculty-list {
-            background-color: transparent;
-            border-radius: var(--radius);
-        }
-        
-        .faculty-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
-        
-        .faculty-card {
             background-color: white;
             border-radius: var(--radius);
-            padding: 15px;
+            overflow-x: auto; /* Allow horizontal scrolling for table */
             box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
         }
         
-        .faculty-name {
-            font-size: 18px;
+        .faculty-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px; /* Ensure table doesn't get too squished */
+        }
+        
+        .faculty-table th, .faculty-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .faculty-table th {
+            background-color: var(--mit-red);
+            color: white;
             font-weight: 600;
-            color: var(--mit-red);
+            position: sticky; /* Keep headers visible when scrolling */
+            top: 0;
         }
         
-        .faculty-email {
-            color: #444;
-            word-break: break-all;
+        .faculty-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         
-        .faculty-lab {
-            font-weight: 500;
-        }
-        
-        .faculty-website a {
-            color: #0066cc;
-            text-decoration: none;
-            word-break: break-all;
-        }
-        
-        .faculty-status {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
+        .faculty-table tr:hover {
+            background-color: #f0f0f0;
         }
         
         .badge {
             display: inline-block;
-            padding: 8px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
-            text-align: center;
-            min-height: 36px; /* Better touch target */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .badge-success {
@@ -366,16 +324,14 @@
             color: white;
         }
         
-        .faculty-actions {
+        .action-cell {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
-            justify-content: space-between;
         }
         
         .btn-icon {
-            width: 48px; /* Larger touch target */
-            height: 48px; /* Larger touch target */
+            width: 44px; /* Larger touch target */
+            height: 44px; /* Larger touch target */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -383,7 +339,7 @@
             border: none;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 20px;
+            font-size: 18px; /* Larger for better visibility */
         }
         
         .btn-edit {
@@ -403,33 +359,24 @@
         
         .btn-icon:hover {
             filter: brightness(1.1);
+            transform: translateY(-2px);
         }
         
         .empty-state {
-            padding: 30px 20px;
+            padding: 40px;
             text-align: center;
             color: var(--mit-dark-gray);
-            background-color: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
         }
         
-        /* Improved focus states for accessibility */
-        button:focus, a:focus, input:focus, select:focus {
-            outline: 3px solid rgba(163, 31, 52, 0.5);
-        }
-        
-        /* Hide table headers on mobile */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
+        /* Improve spacing in table cells on mobile */
+        @media (max-width: 768px) {
+            .faculty-table th, .faculty-table td {
+                padding: 12px 8px;
+            }
+            
+            .action-cell {
+                gap: 5px;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -437,7 +384,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Grad School Application Tracker</h1>
+            <h1>Graduate School Application Tracker</h1>
             
             <div class="status-legend">
                 <div class="legend-item">
@@ -510,8 +457,20 @@
         <div class="current-school">Add a school to get started</div>
         
         <div class="faculty-list">
-            <!-- Card-based layout will be generated here -->
-            <div id="faculty-cards" class="faculty-cards"></div>
+            <table class="faculty-table">
+                <thead>
+                    <tr>
+                        <th>Faculty Name</th>
+                        <th>Lab</th>
+                        <th>Accepting</th>
+                        <th>Emailed</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="faculty-table-body">
+                    <!-- Table content will be generated dynamically -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -521,7 +480,9 @@
             localStorage.clear(); // Clear any old data
             localStorage.setItem('appInitialized', 'true');
         }
-        
+        // Initial data with empty lists
+        const initialData = {};
+
         // Store data
         let appData = {
             currentSchool: '',
@@ -548,45 +509,35 @@
         }
 
         // DOM elements
-        const facultyCards = document.getElementById('faculty-cards');
+        const facultyTableBody = document.getElementById('faculty-table-body');
+        const schoolTabs = document.querySelectorAll('.school-tab');
         const currentSchoolTitle = document.querySelector('.current-school');
+        const addSchoolTab = document.querySelector('.school-tab[data-school="add-school"]');
 
-        // Set up event listeners after the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listener for faculty form
-            const facultyForm = document.getElementById('faculty-form');
-            facultyForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get the button to check if we're adding or updating
-                const submitButton = document.getElementById('add-faculty');
-                
-                if (submitButton.textContent === 'Update Faculty') {
-                    const index = parseInt(submitButton.dataset.editIndex);
-                    updateFaculty(index);
-                } else {
-                    addFaculty();
-                }
-            });
+        // Add event listeners
+        const facultyForm = document.getElementById('faculty-form');
+        facultyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Add event listener for add school button
-            const addSchoolButton = document.querySelector('.school-tab[data-school="add-school"]');
-            addSchoolButton.addEventListener('click', function() {
-                console.log('Add school button clicked');
-                showAddSchoolPrompt();
-            });
+            // Get the button to check if we're adding or updating
+            const submitButton = document.getElementById('add-faculty');
             
-            // Call this function when the page loads
-            updateSchoolTabs();
-            updateAddFormVisibility();
-            
-            // Initial render
-            renderFacultyCards();
+            if (submitButton.textContent === 'Update Faculty') {
+                const index = parseInt(submitButton.dataset.editIndex);
+                updateFaculty(index);
+            } else {
+                addFaculty();
+            }
         });
+        
+        // Event listener for Add School tab - directly click on DOM element
+        document.querySelector('.school-tab[data-school="add-school"]').onclick = function() {
+            showAddSchoolPrompt();
+        };
 
         // Functions
-        function renderFacultyCards() {
-            facultyCards.innerHTML = '';
+        function renderFacultyTable() {
+            facultyTableBody.innerHTML = '';
             
             // If no current school is selected, don't try to render anything
             if (!appData.currentSchool || !appData.schools[appData.currentSchool]) {
@@ -596,55 +547,42 @@
             const currentSchoolData = appData.schools[appData.currentSchool];
             
             if (!currentSchoolData.faculty.length) {
-                facultyCards.innerHTML = `
-                    <div class="empty-state">
-                        <p>No faculty added yet for ${currentSchoolData.name}.</p>
-                    </div>
+                facultyTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <p>No faculty added yet for ${currentSchoolData.name}.</p>
+                            </div>
+                        </td>
+                    </tr>
                 `;
                 return;
             }
             
             currentSchoolData.faculty.forEach((faculty, index) => {
-                const card = document.createElement('div');
-                card.className = 'faculty-card';
+                const tr = document.createElement('tr');
                 
-                // Create elements for card content
-                const nameElem = document.createElement('div');
-                nameElem.className = 'faculty-name';
+                // Create email link for faculty name
+                const emailLink = faculty.email ? 
+                    `<a href="mailto:${faculty.email}" title="Send email">${faculty.name}</a>` : 
+                    faculty.name;
                 
-                if (faculty.email) {
-                    const emailLink = document.createElement('a');
-                    emailLink.href = `mailto:${faculty.email}`;
-                    emailLink.textContent = faculty.name;
-                    nameElem.appendChild(emailLink);
-                } else {
-                    nameElem.textContent = faculty.name;
-                }
+                // Create lab link
+                const labLink = faculty.website ? 
+                    `<a href="${faculty.website}" target="_blank" title="Visit lab website">${faculty.lab}</a>` : 
+                    faculty.lab;
                 
-                const labElem = document.createElement('div');
-                labElem.className = 'faculty-lab';
-                labElem.textContent = faculty.lab || 'No lab specified';
-                
-                // Create website link
-                let websiteElem = '';
-                if (faculty.website) {
-                    websiteElem = `
-                        <div class="faculty-website">
-                            <a href="${faculty.website}" target="_blank" rel="noopener">Lab Website</a>
-                        </div>
-                    `;
-                }
-                
-                // Create status badges
+                // Accepting status badge
                 let acceptingBadge = '';
                 if (faculty.accepting === 'accepting') {
-                    acceptingBadge = '<span class="badge badge-success" onclick="toggleAccepting(' + index + ')">Accepting</span>';
+                    acceptingBadge = 'Accepting';
                 } else if (faculty.accepting === 'not-accepting') {
-                    acceptingBadge = '<span class="badge badge-danger" onclick="toggleAccepting(' + index + ')">Not Accepting</span>';
+                    acceptingBadge = 'Not Accepting';
                 } else {
-                    acceptingBadge = '<span class="badge badge-warning" onclick="toggleAccepting(' + index + ')">Unknown</span>';
+                    acceptingBadge = 'Unknown';
                 }
                 
+                // Emailed status badge
                 let emailedBadge = '';
                 if (faculty.emailed === 'replied') {
                     emailedBadge = '<span class="badge badge-success">Replied</span>';
@@ -654,42 +592,21 @@
                     emailedBadge = '<span class="badge badge-secondary">Not Emailed</span>';
                 }
                 
-                // Action buttons
-                const actionsHtml = `
-                    <div class="faculty-actions">
+                tr.innerHTML = `
+                    <td>${emailLink}</td>
+                    <td>${labLink}</td>
+                    <td><span class="badge badge-${faculty.accepting === 'accepting' ? 'success' : faculty.accepting === 'not-accepting' ? 'danger' : 'warning'}" 
+                        style="cursor: pointer;" 
+                        onclick="toggleAccepting(${index})">${acceptingBadge}</span></td>
+                    <td>${emailedBadge}</td>
+                    <td class="action-cell">
                         <button class="btn-icon btn-edit" title="Edit" onclick="editFaculty(${index})">✏️</button>
                         <button class="btn-icon btn-emailed" title="Mark as Emailed" onclick="toggleEmailed(${index})">📧</button>
                         <button class="btn-icon btn-delete" title="Delete" onclick="deleteFaculty(${index})">🗑️</button>
-                    </div>
+                    </td>
                 `;
                 
-                // Add elements to card
-                card.appendChild(nameElem);
-                
-                if (faculty.email) {
-                    const emailElem = document.createElement('div');
-                    emailElem.className = 'faculty-email';
-                    emailElem.textContent = faculty.email;
-                    card.appendChild(emailElem);
-                }
-                
-                card.appendChild(labElem);
-                
-                if (faculty.website) {
-                    card.innerHTML += websiteElem;
-                }
-                
-                const statusDiv = document.createElement('div');
-                statusDiv.className = 'faculty-status';
-                statusDiv.innerHTML = `
-                    <div>${acceptingBadge}</div>
-                    <div>${emailedBadge}</div>
-                `;
-                card.appendChild(statusDiv);
-                
-                card.innerHTML += actionsHtml;
-                
-                facultyCards.appendChild(card);
+                facultyTableBody.appendChild(tr);
             });
         }
 
@@ -701,6 +618,8 @@
             const accepting = document.getElementById('accepting-status').value;
             const emailed = document.getElementById('emailed-status').value;
             
+            // Form validation now handled by HTML5 'required' attribute
+            
             appData.schools[appData.currentSchool].faculty.push({
                 name,
                 email,
@@ -711,7 +630,7 @@
             });
             
             saveData();
-            renderFacultyCards();
+            renderFacultyTable();
             clearForm();
         }
 
@@ -730,7 +649,7 @@
             addButton.dataset.editIndex = index;
             addButton.textContent = 'Update Faculty';
             
-            // Scroll to form
+            // Scroll to form on mobile
             document.querySelector('.add-panel').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -741,6 +660,8 @@
             const website = document.getElementById('lab-website').value.trim();
             const accepting = document.getElementById('accepting-status').value;
             const emailed = document.getElementById('emailed-status').value;
+            
+            // Form validation now handled by HTML5 'required' attribute
             
             // Make sure index is valid
             if (index >= 0 && index < appData.schools[appData.currentSchool].faculty.length) {
@@ -754,7 +675,7 @@
                 };
                 
                 saveData();
-                renderFacultyCards();
+                renderFacultyTable();
                 clearForm();
             } else {
                 console.error('Invalid index for faculty update:', index);
@@ -765,7 +686,7 @@
             if (confirm('Are you sure you want to delete this faculty?')) {
                 appData.schools[appData.currentSchool].faculty.splice(index, 1);
                 saveData();
-                renderFacultyCards();
+                renderFacultyTable();
             }
         }
 
@@ -782,7 +703,7 @@
             }
             
             saveData();
-            renderFacultyCards();
+            renderFacultyTable();
         }
 
         function toggleEmailed(index) {
@@ -798,7 +719,7 @@
             }
             
             saveData();
-            renderFacultyCards();
+            renderFacultyTable();
         }
 
         function clearForm() {
@@ -833,7 +754,7 @@
                 currentSchoolTitle.textContent = 'Add a school to get started';
             }
             
-            renderFacultyCards();
+            renderFacultyTable();
             updateAddFormVisibility();
         }
         
@@ -854,6 +775,7 @@
         }
 
         function showAddSchoolPrompt() {
+            console.log("showAddSchoolPrompt function called");
             const schoolName = prompt('Enter the name of the new school:');
             if (schoolName && schoolName.trim()) {
                 const schoolId = schoolName.toLowerCase().replace(/\s+/g, '-');
@@ -892,6 +814,10 @@
         function updateSchoolTabs() {
             // Clear existing school tabs (except the add-school tab)
             const tabsContainer = document.querySelector('.schools-tabs');
+            
+            // Store reference to add school button
+            const addSchoolButton = document.querySelector('.school-tab[data-school="add-school"]');
+            
             Array.from(tabsContainer.children).forEach(child => {
                 if (child.dataset.school !== 'add-school') {
                     tabsContainer.removeChild(child);
@@ -936,9 +862,143 @@
                     newTab.classList.add('active');
                 }
                 
-                newTab.addEventListener('click', () => {
+                // Add click handler directly to the element
+                newTab.onclick = function() {
                     changeSchool(schoolId);
-                });
+                };
                 
                 // Insert before "Add School" tab
-                tabsContainer.insertBefore(newTab, addSchoolTab);
+                tabsContainer.insertBefore(newTab, addSchoolButton);
+            });
+            
+            // Update the current school display
+            updateAddFormVisibility();
+        }
+        
+        function getStatusTitle(status) {
+            switch(status) {
+                case 'accepted': return 'Accepted';
+                case 'rejected': return 'Rejected';
+                case 'pending': return 'Application Pending';
+                default: return 'Not Applied';
+            }
+        }
+        
+       function toggleSchoolStatus(schoolId) {
+            const school = appData.schools[schoolId];
+            
+            // Cycle through statuses
+            switch(school.status) {
+                case 'not-applied':
+                    school.status = 'pending';
+                    break;
+                case 'pending':
+                    school.status = 'rejected';
+                    break;
+                case 'rejected':
+                    school.status = 'accepted';
+                    break;
+                case 'accepted':
+                    school.status = 'not-applied';
+                    break;
+                default:
+                    school.status = 'not-applied';
+            }
+        
+            // 🎉 fire confetti when they hit "accepted"
+            if (school.status === 'accepted') {
+                // Adjusted confetti for mobile - centered and less intensive
+                confetti({
+                    particleCount: 1500,  // Reduced for mobile performance
+                    spread: 360,
+                    origin: { x: 0.5, y: 0.3 }  // Center of screen for mobile
+                });
+            }
+            
+            saveData();
+            updateSchoolTabs();
+        }
+        
+        function deleteSchool(schoolId) {
+            if (Object.keys(appData.schools).length <= 1) {
+                alert("Cannot delete the last school. At least one school is required.");
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete the school "${appData.schools[schoolId].name}" and all its faculty data?`)) {
+                // If we're deleting the current school, switch to another school first
+                if (appData.currentSchool === schoolId) {
+                    // Find the first school that's not the one we're deleting
+                    const nextSchool = Object.keys(appData.schools).find(id => id !== schoolId);
+                    if (nextSchool) {
+                        appData.currentSchool = nextSchool;
+                    }
+                }
+                
+                // Delete the school
+                delete appData.schools[schoolId];
+                
+                // Update UI and save data
+                updateSchoolTabs();
+                currentSchoolTitle.textContent = `${appData.schools[appData.currentSchool].name} Faculty List`;
+                renderFacultyTable();
+                saveData();
+            }
+        }
+        
+        // Handle swipe gestures for mobile to navigate between schools
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            const minSwipeDistance = 75; // Minimum swipe distance in pixels
+            
+            // No current school, no swiping needed
+            if (!appData.currentSchool) return;
+            
+            const schoolIds = Object.keys(appData.schools);
+            const currentIndex = schoolIds.indexOf(appData.currentSchool);
+            
+            // If we can find the current index
+            if (currentIndex !== -1) {
+                // Swipe right (previous school)
+                if (swipeDistance > minSwipeDistance) {
+                    const prevIndex = (currentIndex - 1 + schoolIds.length) % schoolIds.length;
+                    changeSchool(schoolIds[prevIndex]);
+                }
+                // Swipe left (next school)
+                else if (swipeDistance < -minSwipeDistance) {
+                    const nextIndex = (currentIndex + 1) % schoolIds.length;
+                    changeSchool(schoolIds[nextIndex]);
+                }
+            }
+        }
+        
+        // Call this function when the page loads
+        updateSchoolTabs();
+        updateAddFormVisibility();
+        
+        // Initial render
+        renderFacultyTable();
+
+        // Make functions available globally for onclick handlers
+        window.editFaculty = editFaculty;
+        window.deleteFaculty = deleteFaculty;
+        window.toggleEmailed = toggleEmailed;
+        window.toggleAccepting = toggleAccepting;
+        window.deleteSchool = deleteSchool;
+        window.toggleSchoolStatus = toggleSchoolStatus;
+        window.showAddSchoolPrompt = showAddSchoolPrompt;
+    </script>
+</body>
+</html>
