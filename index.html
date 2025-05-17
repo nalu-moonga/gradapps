@@ -569,16 +569,24 @@
             }
         });
         
-        schoolTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const school = tab.dataset.school;
-                if (school === 'add-school') {
-                    showAddSchoolPrompt();
-                } else {
-                    changeSchool(school);
+        // Add event listener for add school button
+        document.querySelector('.school-tab[data-school="add-school"]').addEventListener('click', function() {
+            showAddSchoolPrompt();
+        });
+        
+        // Update school tab event binding function
+        function bindSchoolTabEvents() {
+            document.querySelectorAll('.school-tab').forEach(tab => {
+                if (tab.dataset.school !== 'add-school') {
+                    tab.addEventListener('click', () => {
+                        changeSchool(tab.dataset.school);
+                    });
                 }
             });
-        });
+        }
+        
+        // Initial binding
+        bindSchoolTabEvents();
 
         // Functions
         function renderFacultyCards() {
