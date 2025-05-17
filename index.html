@@ -145,6 +145,11 @@
             background-color: #eee;
             border-color: #ccc;
         }
+
+        .school-status.waitlisted {
+            background-color: #77C3EC;
+            border-color: #ccc;
+        }
         
         .delete-school {
             position: absolute;
@@ -394,6 +399,10 @@
                 <div class="legend-item">
                     <span class="school-status pending"></span>
                     <span>Pending</span>
+                </div>
+                <div class="legend-item">
+                    <span class="school-status waitlisted"></span>
+                    <span>Waitlisted</span>
                 </div>
                 <div class="legend-item">
                     <span class="school-status rejected"></span>
@@ -893,6 +902,9 @@
                     school.status = 'pending';
                     break;
                 case 'pending':
+                    school.status = 'waitlisted';
+                    break;
+                case 'waitlisted':
                     school.status = 'rejected';
                     break;
                 case 'rejected':
